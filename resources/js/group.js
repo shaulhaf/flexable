@@ -47,8 +47,14 @@ export default class Group {
             }
 
             // File object, attach its file for upload
-            data.attributes[item[0]] =  item[0];
-            data.files[ item[0]] = item[1];
+            if(item[0].split('__')[1] == 'clips') {
+                data.attributes[item[0]] = '___upload-' + item[0];
+                data.files['___upload-' + item[0]] = item[1];
+            } else {
+                data.attributes[item[0]] =  item[0];
+                data.files[ item[0]] = item[1];
+            }
+            
         }
 
         return data;
