@@ -278,7 +278,7 @@ var Group = function () {
     }, {
         key: 'getTemporaryUniqueKey',
         value: function getTemporaryUniqueKey(attribute) {
-            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15).substr(0, 16);
+            return (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substr(0, 16);
         }
 
         /**
