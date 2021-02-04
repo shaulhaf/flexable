@@ -2,6 +2,34 @@
     <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
 
+            <div class="z-20 relative py-6" v-if="layouts && field.addToTop">
+                <div class="relative" v-if="layouts.length > 1">
+                    <div v-if="isLayoutsDropdownOpen"
+                        class="overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                    >
+                        <div>
+                            <ul class="list-reset">
+                                <li v-for="layout in layouts" class="border-b border-40">
+                                    <a @click="addNewGroup(layout)"
+                                        class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
+                                        <div><p class="text-90">{{ layout.title }}</p></div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    tabindex="0"
+                    class="btn btn-default btn-primary inline-flex items-center relative"
+                    @click="toggleLayoutsDropdownOrAddDefault"
+                    v-if="this.limitCounter != 0"
+                >
+                    <span>{{ field.button }}</span>
+                </button>
+            </div>
+
             <div v-if="order.length > 0">
                 <form-nova-flexible-content-group
                     v-for="group in orderedGroups"
@@ -16,7 +44,7 @@
                 />
             </div>
 
-            <div class="z-20 relative" v-if="layouts">
+            <div class="z-20 relative py-6" v-if="layouts && !field.addToTop">
                 <div class="relative" v-if="layouts.length > 1">
                     <div v-if="isLayoutsDropdownOpen"
                         class="overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
@@ -24,7 +52,7 @@
                         <div>
                             <ul class="list-reset">
                                 <li v-for="layout in layouts" class="border-b border-40">
-                                    <a  @click="addGroup(layout)"
+                                    <a @click="addNewGroup(layout)"
                                         class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
                                         <div><p class="text-90">{{ layout.title }}</p></div>
                                     </a>
@@ -179,6 +207,29 @@ export default {
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+
+            this.isLayoutsDropdownOpen = false;
+
+            if (this.limitCounter > 0) {
+                this.limitCounter--;
+            }
+        },
+
+        /**
+         * Preppend a new layout to flexible content's list
+         */
+        addNewGroup(layout, attributes, key) {
+            if(!layout) return;
+
+            let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
+                group = new Group(layout.name, layout.title, fields, this.field, key);
+
+            this.groups[group.key] = group;
+            if (this.field.addToTop) {
+                this.order.unshift(group.key);
+            } else {
+                this.order.push(group.key);
+            }
 
             this.isLayoutsDropdownOpen = false;
 

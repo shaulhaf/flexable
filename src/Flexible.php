@@ -69,6 +69,17 @@ class Flexible extends Field
     }
 
     /**
+     * Set add components to top
+     *
+     * @param string $label
+     * @return $this
+     */
+    public function addComponentsToTop()
+    {
+        return $this->withMeta(['addToTop' => true]);
+    }
+
+    /**
      *  Prevent the 'Add Layout' button from appearing more than once
      *
      * @return $this
